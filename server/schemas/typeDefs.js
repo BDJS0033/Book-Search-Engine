@@ -6,32 +6,41 @@ type Query {
 }
 
 type Mutation {
-    login()
-    addUser()
-    saveBook()
-    removeBook()
+    login(email: String!, password: String!): Auth
+    addUser(username: String!, email: String!, password: String!): Auth
+    saveBook(input: bookInput): User
+    removeBook(bookId: ID!): User
 }
 
 type User {
-    _id:
-    username:
-    email:
-    bookCount:
-    saveBooks:
+    _id: ID
+    username: String
+    email: String
+    bookCount: Int
+    saveBooks: [Book]
 }
 
 type Book {
-    bookId:
-    authors:
-    description:
-    title:
-    image:
-    link:
+    bookId: String
+    authors: [String]
+    description: String
+    title: String
+    image: String
+    link: String
+}
+
+input bookInput {
+    bookId: String
+    authors: [String]
+    description: String
+    title: String
+    image: String
+    link: String
 }
 
 type Auth {
-    token:
-    user:
+    token: ID!
+    user: User
 }
 `;
 
