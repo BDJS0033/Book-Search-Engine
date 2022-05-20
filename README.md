@@ -61,13 +61,17 @@ npm i mongoose
 npm i apollo-server-express
 npm i graphql
 npm i jsonwebtoken
+npm i graphql-tag
+npm i @apollo/client
 ```
 [Node.js](https://nodejs.org/) - 
 [Express](https://www.npmjs.com/package/express) -
 [Mongoose](https://www.npmjs.com/package/mongoose) -
 [Apollo-Server-Express](https://www.npmjs.com/package/apollo-server-express) -
-[GraphQL.js](https://www.npmjs.com/package/graphql/)
-[jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
+[GraphQL.js](https://www.npmjs.com/package/graphql/) -
+[jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) -
+[graphql-tag](https://www.npmjs.com/package/graphql-tag) -
+[Apollo-Client](https://www.npmjs.com/package/@apollo/client)
 
 <br />
 
