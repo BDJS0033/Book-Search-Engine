@@ -3,6 +3,7 @@ import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'reac
 
 //setting up Apollo useMutation() Hooks to execute mutations
 import { SAVE_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
 import { useMutation } from '@apollo/client';
 
 
@@ -19,7 +20,7 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  const [saveBook, { error }] = useMutation(SAVE_BOOK);
+  const [saveBook] = useMutation(SAVE_BOOK);
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -71,15 +72,14 @@ const SearchBooks = () => {
       return false;
     }
 
-    try {
-      const { data } = await saveBook({
-        variables: { input: bookToSave },
+    try {      
+      await saveBook({
+        variables: { book: bookToSave },
+        update: cache => {
+          const {me} = cache.readQuery({ query: GET_ME });
+          cache.writeQuery({ query: GET_ME, data: {me: { ...me, savedBooks: [...me.savedBooks, bookToSave ]}}})
+        }
       });
-
-      if (error) {
-        throw new Error('something went wrong!');
-      }
-      console.log("book", data);
    
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
