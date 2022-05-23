@@ -1,40 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 
-//updating queries in front-end files per assignment specifications
-//execute 'me' query setup using Apollo Server
-import { GET_ME } from '../utils/queries';
-import { REMOVE_BOOK } from '../utils/mutations'
-
-import Auth from '../utils/auth';
+// import { getMe, deleteBook } from '../utils/API';
 import { removeBookId } from '../utils/localStorage';
-import { useMutation, useQuery } from "@apollo/client";
+import Auth from '../utils/auth';
+import { useQuery, useMutation } from '@apollo/client';
+import { REMOVE_BOOK} from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
 
-//setting up to use query/mutation & GET_ME/REMOVE_BOOK - may need to change this, but leave as for now.
 const SavedBooks = () => {
+
+  const [ removeBook, { error } ] = useMutation(REMOVE_BOOK);
+
   const { loading, data } = useQuery(GET_ME);
-  const [deleteBook] = useMutation(REMOVE_BOOK);
   const userData = data?.me || {};
 
-// create function that accepts the book's mongo _id value as param and deletes the book from the database
+  // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
       return false;
     }
+
     try {
-      await deleteBook({
-        variables: {bookId: bookId},
-        update: cache => {
-          const data = cache.readQuery({ query: GET_ME});
-          const userDataCache = data.me;
-          const savedBooksCache = userDataCache.savedBooks;
-          const updatedBooksCache = savedBooksCache.filter((book) => book.bookId !==bookId);
-          data.me.savedBooks = updatedBooksCache;
-          cache.writeQuery({ query: GET_ME, data: {data: {...data.me.savedBooks}}})
-        }
+      await removeBook({
+        variables: { bookId },
       });
+
+      if (error) {
+        throw new Error("Something went wrong!");
+      }
 
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
